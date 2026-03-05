@@ -1,0 +1,113 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 220 25% 5%;
+  --foreground: 0 0% 98%;
+  --neon-cyan: 187 100% 50%;
+  --neon-blue: 210 100% 60%;
+  --neon-purple: 280 100% 60%;
+  --neon-pink: 320 100% 60%;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Rajdhani', sans-serif;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Orbitron', sans-serif;
+}
+
+.glass-card {
+  background: linear-gradient(135deg, rgba(20, 24, 31, 0.8), rgba(10, 12, 16, 0.9));
+  backdrop-filter: blur(20px);
+  border: 1px solid hsl(var(--neon-cyan) / 0.2);
+  border-radius: 1rem;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, hsl(var(--neon-cyan)), hsl(var(--neon-blue)), hsl(var(--neon-purple)));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.btn-neon {
+  position: relative;
+  overflow: hidden;
+  padding: 1rem 2rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: linear-gradient(135deg, hsl(var(--neon-cyan) / 0.2), hsl(var(--neon-blue) / 0.2));
+  border: 1px solid hsl(var(--neon-cyan));
+  color: hsl(var(--neon-cyan));
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-neon:hover:not(:disabled) {
+  background: linear-gradient(135deg, hsl(var(--neon-cyan)), hsl(var(--neon-blue)));
+  color: #0a0c10;
+  box-shadow: 0 0 20px hsl(var(--neon-cyan)), 0 0 40px hsl(var(--neon-cyan));
+  transform: translateY(-2px);
+}
+
+.btn-neon:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-neon-purple {
+  position: relative;
+  overflow: hidden;
+  padding: 1rem 2rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: linear-gradient(135deg, hsl(var(--neon-purple) / 0.2), hsl(var(--neon-pink) / 0.2));
+  border: 1px solid hsl(var(--neon-purple));
+  color: hsl(var(--neon-purple));
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-neon-purple:hover {
+  background: linear-gradient(135deg, hsl(var(--neon-purple)), hsl(var(--neon-pink)));
+  color: #fafafa;
+  box-shadow: 0 0 20px hsl(var(--neon-purple)), 0 0 40px hsl(var(--neon-purple));
+  transform: translateY(-2px);
+}
+
+.grid-pattern {
+  background-image: linear-gradient(hsl(var(--neon-cyan) / 0.05) 1px, transparent 1px),
+                    linear-gradient(90deg, hsl(var(--neon-cyan) / 0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
