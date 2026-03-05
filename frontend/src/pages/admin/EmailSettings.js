@@ -40,7 +40,7 @@ export default function EmailSettings() {
       setMessage('Settings saved!');
       setTimeout(() => setMessage(''), 3000);
     } catch (error) {
-      setMessage('Помилка збереження');
+      setMessage('Error збереження');
       console.error('Error saving email settings:', error);
     } finally {
       setLoading(false);

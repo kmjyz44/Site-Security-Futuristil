@@ -37,10 +37,10 @@ export default function ChatbotSettings() {
     setMessage('');
     try {
       await axios.put(`${API}/admin/chatbot-settings`, settings, getAuthHeaders());
-      setMessage('Налаштування збережено!');
+      setMessage('Settings saved!');
       setTimeout(() => setMessage(''), 3000);
     } catch (error) {
-      setMessage('Помилка збереження');
+      setMessage('Error збереження');
       console.error('Error saving chatbot settings:', error);
     } finally {
       setLoading(false);
