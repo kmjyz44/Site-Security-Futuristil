@@ -42,7 +42,7 @@ export default function AdminLogin() {
           <h1 className="text-3xl font-bold font-orbitron gradient-text">
             Admin Panel
           </h1>
-          <p className="text-white/60 mt-2 font-rajdhani">Ввійдіть для керування сайтом</p>
+          <p className="text-white/60 mt-2 font-rajdhani">Ввійдіть to manage site</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -100,7 +100,7 @@ export default function AdminLogin() {
 
         <div className="mt-6 text-center">
           <a href="/" className="text-neon-cyan/60 hover:text-neon-cyan text-sm font-rajdhani">
-            ← Повернутись на сайт
+            ← Повернутись to website
           </a>
         </div>
 

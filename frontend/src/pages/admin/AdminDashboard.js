@@ -46,7 +46,7 @@ export default function AdminDashboard() {
   };
 
   const menuItems = [
-    { path: '/admin/dashboard', icon: LayoutDashboard, label: 'Панель' },
+    { path: '/admin/dashboard', icon: LayoutDashboard, label: 'Panel' },
     { path: '/admin/content', icon: FileText, label: 'Content' },
     { path: '/admin/sections', icon: Image, label: 'Sections' },
     { path: '/admin/messages', icon: MessageSquare, label: 'Messages', badge: unreadCount },
@@ -63,7 +63,7 @@ export default function AdminDashboard() {
         <div className="p-6 border-b border-neon-cyan/20 flex items-center justify-between">
           {sidebarOpen && (
             <h1 className="text-xl font-bold font-orbitron gradient-text">
-              Адмін
+              Admin
             </h1>
           )}
           <button
@@ -196,7 +196,7 @@ function DashboardHome() {
             className="p-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-colors"
           >
             <FileText className="w-6 h-6 text-neon-cyan mb-2" />
-            <h3 className="font-semibold text-white mb-1">Редагувати Content</h3>
+            <h3 className="font-semibold text-white mb-1">Edit Content</h3>
             <p className="text-sm text-white/60 font-rajdhani">Change texts and contacts</p>
           </Link>
 
@@ -223,7 +223,7 @@ function DashboardHome() {
             className="p-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-colors"
           >
             <Bot className="w-6 h-6 text-neon-purple mb-2" />
-            <h3 className="font-semibold text-white mb-1">Налаштувати Chatbot</h3>
+            <h3 className="font-semibold text-white mb-1">Configure Chatbot</h3>
             <p className="text-sm text-white/60 font-rajdhani">Preparation for integration</p>
           </Link>
         </div>
