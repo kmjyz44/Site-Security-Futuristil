@@ -37,7 +37,7 @@ export default function EmailSettings() {
     setMessage('');
     try {
       await axios.put(`${API}/admin/email-settings`, settings, getAuthHeaders());
-      setMessage('Settings saved!');
+      setMessage('Налаштування збережено!');
       setTimeout(() => setMessage(''), 3000);
     } catch (error) {
       setMessage('Помилка збереження');
@@ -52,9 +52,9 @@ export default function EmailSettings() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-4xl font-bold font-orbitron gradient-text mb-2">
-            Email Settings
+            Налаштування Email
           </h1>
-          <p className="text-white/60 font-rajdhani">Configure message sending</p>
+          <p className="text-white/60 font-rajdhani">Конфігурація відправки повідомлень</p>
         </div>
         <button
           onClick={handleSave}
@@ -80,7 +80,7 @@ export default function EmailSettings() {
       <div className="glass-card p-6 space-y-6">
         <div>
           <label className="block text-white font-semibold mb-3 font-rajdhani">
-            Email Provider
+            Провайдер Email
           </label>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <button
@@ -125,15 +125,15 @@ export default function EmailSettings() {
             data-testid="api-key"
           />
           <p className="text-xs text-white/40 mt-2 font-rajdhani">
-            {settings.provider === 'resend' && 'Get key at resend.com/api-keys'}
-            {settings.provider === 'sendgrid' && 'Get key at app.sendgrid.com/settings/api_keys'}
+            {settings.provider === 'resend' && 'Отримайте ключ на resend.com/api-keys'}
+            {settings.provider === 'sendgrid' && 'Отримайте ключ на app.sendgrid.com/settings/api_keys'}
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-white font-semibold mb-2 font-rajdhani">
-              From (Sender)
+              Від (Відправник)
             </label>
             <input
               type="email"
@@ -147,7 +147,7 @@ export default function EmailSettings() {
 
           <div>
             <label className="block text-white font-semibold mb-2 font-rajdhani">
-              To (Recipient)
+              Кому (Отримувач)
             </label>
             <input
               type="email"
@@ -161,13 +161,13 @@ export default function EmailSettings() {
         </div>
 
         <div className="p-4 bg-neon-cyan/10 border border-neon-cyan/30 rounded-lg">
-          <h4 className="font-semibold text-neon-cyan mb-2 font-orbitron">Instructions:</h4>
+          <h4 className="font-semibold text-neon-cyan mb-2 font-orbitron">Інструкція:</h4>
           <ul className="space-y-2 text-sm text-white/70 font-rajdhani">
-            <li>1. Choose provider (Resend or SendGrid)</li>
-            <li>2. Create account on provider's website</li>
-            <li>3. Get API key</li>
-            <li>4. Specify sender and recipient email</li>
-            <li>5. Save settings</li>
+            <li>1. Оберіть провайдера (Resend або SendGrid)</li>
+            <li>2. Створіть акаунт на сайті провайдера</li>
+            <li>3. Отримайте API ключ</li>
+            <li>4. Вкажіть email відправника та отримувача</li>
+            <li>5. Збережіть налаштування</li>
           </ul>
         </div>
       </div>

@@ -32,10 +32,10 @@ export default function ContentManagement() {
     setMessage('');
     try {
       await axios.put(`${API}/admin/content`, content, getAuthHeaders());
-      setMessage('Content saved successfully!');
+      setMessage('Контент успішно збережено!');
       setTimeout(() => setMessage(''), 3000);
     } catch (error) {
-      setMessage('Save error');
+      setMessage('Помилка збереження');
       console.error('Error saving content:', error);
     } finally {
       setLoading(false);
@@ -49,9 +49,9 @@ export default function ContentManagement() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-4xl font-bold font-orbitron gradient-text mb-2">
-            Content Management
+            Керування Контентом
           </h1>
-          <p className="text-white/60 font-rajdhani">Edit texts and contact information</p>
+          <p className="text-white/60 font-rajdhani">Редагування текстів та контактної інформації</p>
         </div>
         <button
           onClick={handleSave}
@@ -64,7 +64,7 @@ export default function ContentManagement() {
           ) : (
             <Save className="w-5 h-5" />
           )}
-          Save
+          Зберегти
         </button>
       </div>
 
@@ -81,7 +81,7 @@ export default function ContentManagement() {
       <div className="glass-card p-6 space-y-6">
         <div>
           <label className="block text-white font-semibold mb-2 font-rajdhani">
-            Hero Section Title
+            Заголовок Hero Секції
           </label>
           <input
             type="text"
@@ -94,7 +94,7 @@ export default function ContentManagement() {
 
         <div>
           <label className="block text-white font-semibold mb-2 font-rajdhani">
-            Hero Section Subtitle
+            Підзаголовок Hero Секції
           </label>
           <input
             type="text"
@@ -107,7 +107,7 @@ export default function ContentManagement() {
 
         <div>
           <label className="block text-white font-semibold mb-2 font-rajdhani">
-            About Us Text
+            Текст "Про Нас"
           </label>
           <textarea
             value={content.about_text}
@@ -121,7 +121,7 @@ export default function ContentManagement() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-white font-semibold mb-2 font-rajdhani">
-              Phone
+              Телефон
             </label>
             <input
               type="text"
@@ -148,7 +148,7 @@ export default function ContentManagement() {
 
         <div>
           <label className="block text-white font-semibold mb-2 font-rajdhani">
-            Address
+            Адреса
           </label>
           <input
             type="text"

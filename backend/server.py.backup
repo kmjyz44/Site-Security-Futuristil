@@ -220,13 +220,13 @@ async def contact_form(message: ContactMessage):
     # Send email
     email_settings = await db.email_settings.find_one({}, {"_id": 0})
     if email_settings:
-        subject = f"New message from {message.name}"
+        subject = f"Нове повідомлення від {message.name}"
         html = f"""
-        <h2>New message from website</h2>
-        <p><strong>Name:</strong> {message.name}</p>
+        <h2>Нове повідомлення з сайту</h2>
+        <p><strong>Ім'я:</strong> {message.name}</p>
         <p><strong>Email:</strong> {message.email}</p>
-        <p><strong>Phone:</strong> {message.phone or 'Not provided'}</p>
-        <p><strong>Message:</strong></p>
+        <p><strong>Телефон:</strong> {message.phone or 'Не вказано'}</p>
+        <p><strong>Повідомлення:</strong></p>
         <p>{message.message}</p>
         """
         
@@ -250,7 +250,7 @@ async def contact_form(message: ContactMessage):
         except Exception as e:
             logging.error(f"Email send error: {e}")
     
-    return {"success": True, "message": "Message sent"}
+    return {"success": True, "message": "Повідомлення надіслано"}
 
 @api_router.get("/chatbot-settings", response_model=ChatbotSettings)
 async def get_chatbot_settings():
@@ -267,10 +267,10 @@ async def get_chatbot_settings():
 async def admin_login(credentials: AdminCredentials):
     admin = await db.admins.find_one({"username": credentials.username})
     if not admin:
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+        raise HTTPException(status_code=401, detail="Невірні дані")
     
     if not bcrypt.checkpw(credentials.password.encode('utf-8'), admin['password'].encode('utf-8')):
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+        raise HTTPException(status_code=401, detail="Невірні дані")
     
     access_token = create_access_token(data={"sub": admin['username']})
     return {"access_token": access_token, "token_type": "bearer"}
@@ -283,7 +283,7 @@ async def change_password(
 ):
     admin = await db.admins.find_one({"username": username})
     if not bcrypt.checkpw(old_password.encode('utf-8'), admin['password'].encode('utf-8')):
-        raise HTTPException(status_code=400, detail="Invalid old password")
+        raise HTTPException(status_code=400, detail="Невірний старий пароль")
     
     hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
     await db.admins.update_one(
@@ -338,7 +338,7 @@ async def admin_update_section(
     if update_data:
         result = await db.sections.update_one({"id": section_id}, {"$set": update_data})
         if result.matched_count == 0:
-            raise HTTPException(status_code=404, detail="Section not found")
+            raise HTTPException(status_code=404, detail="Розділ не знайдено")
     return {"success": True}
 
 @api_router.delete("/admin/sections/{section_id}")
@@ -348,7 +348,7 @@ async def admin_delete_section(
 ):
     result = await db.sections.delete_one({"id": section_id})
     if result.deleted_count == 0:
-        raise HTTPException(status_code=404, detail="Section not found")
+        raise HTTPException(status_code=404, detail="Розділ не знайдено")
     return {"success": True}
 
 # ============ Admin Email Settings Routes ============
@@ -435,12 +435,12 @@ async def startup():
     count = await db.sections.count_documents({})
     if count == 0:
         default_sections = [
-            {"id": str(uuid.uuid4()), "title": "Security Systems", "description": "Professional security system installation", "image": "/images/service-security-system.jpg", "icon": "shield", "order": 1, "visible": True},
-            {"id": str(uuid.uuid4()), "title": "Video Surveillance", "description": "High-quality camera systems", "image": "/images/service-cameras.jpg", "icon": "camera", "order": 2, "visible": True},
-            {"id": str(uuid.uuid4()), "title": "Electrical Work", "description": "Electrical services of any complexity", "image": "/images/service-electrical.jpg", "icon": "zap", "order": 3, "visible": True},
-            {"id": str(uuid.uuid4()), "title": "Smart Home", "description": "Automation and control systems", "image": "/images/service-automation.jpg", "icon": "home", "order": 4, "visible": True},
-            {"id": str(uuid.uuid4()), "title": "Lock Systems", "description": "Modern access control systems", "image": "/images/service-locks.jpg", "icon": "lock", "order": 5, "visible": True},
-            {"id": str(uuid.uuid4()), "title": "TV Mounting", "description": "Professional TV installation", "image": "/images/service-tv.jpg", "icon": "tv", "order": 6, "visible": True},
+            {"id": str(uuid.uuid4()), "title": "Системи Безпеки", "description": "Професійна установка систем безпеки", "image": "/images/service-security-system.jpg", "icon": "shield", "order": 1, "visible": True},
+            {"id": str(uuid.uuid4()), "title": "Відеоспостереження", "description": "Камери високої якості", "image": "/images/service-cameras.jpg", "icon": "camera", "order": 2, "visible": True},
+            {"id": str(uuid.uuid4()), "title": "Електромонтаж", "description": "Електричні роботи будь-якої складності", "image": "/images/service-electrical.jpg", "icon": "zap", "order": 3, "visible": True},
+            {"id": str(uuid.uuid4()), "title": "Розумний Дім", "description": "Автоматизація та управління", "image": "/images/service-automation.jpg", "icon": "home", "order": 4, "visible": True},
+            {"id": str(uuid.uuid4()), "title": "Замки", "description": "Сучасні системи контролю доступу", "image": "/images/service-locks.jpg", "icon": "lock", "order": 5, "visible": True},
+            {"id": str(uuid.uuid4()), "title": "Монтаж ТВ", "description": "Професійний монтаж телевізорів", "image": "/images/service-tv.jpg", "icon": "tv", "order": 6, "visible": True},
         ]
         await db.sections.insert_many(default_sections)
 

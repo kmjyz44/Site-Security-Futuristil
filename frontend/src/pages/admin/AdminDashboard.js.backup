@@ -47,11 +47,11 @@ export default function AdminDashboard() {
 
   const menuItems = [
     { path: '/admin/dashboard', icon: LayoutDashboard, label: 'Панель' },
-    { path: '/admin/content', icon: FileText, label: 'Content' },
-    { path: '/admin/sections', icon: Image, label: 'Sections' },
-    { path: '/admin/messages', icon: MessageSquare, label: 'Messages', badge: unreadCount },
+    { path: '/admin/content', icon: FileText, label: 'Контент' },
+    { path: '/admin/sections', icon: Image, label: 'Розділи' },
+    { path: '/admin/messages', icon: MessageSquare, label: 'Повідомлення', badge: unreadCount },
     { path: '/admin/email', icon: Mail, label: 'Email' },
-    { path: '/admin/chatbot', icon: Bot, label: 'Chatbot' },
+    { path: '/admin/chatbot', icon: Bot, label: 'Чатбот' },
   ];
 
   return (
@@ -112,7 +112,7 @@ export default function AdminDashboard() {
             data-testid="logout-btn"
           >
             <LogOut className="w-5 h-5" />
-            {sidebarOpen && <span className="font-rajdhani font-medium">Logout</span>}
+            {sidebarOpen && <span className="font-rajdhani font-medium">Вийти</span>}
           </button>
         </div>
       </aside>
@@ -161,34 +161,34 @@ function DashboardHome() {
     <div className="space-y-8">
       <div>
         <h1 className="text-4xl font-bold font-orbitron gradient-text mb-2">
-          Dashboard
+          Панель Керування
         </h1>
-        <p className="text-white/60 font-rajdhani">Manage site content</p>
+        <p className="text-white/60 font-rajdhani">Управління контентом сайту</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="glass-card p-6">
           <MessageSquare className="w-12 h-12 text-neon-cyan mb-4" />
           <h3 className="text-3xl font-bold text-white mb-2">{stats.messages}</h3>
-          <p className="text-white/60 font-rajdhani">Messages</p>
+          <p className="text-white/60 font-rajdhani">Повідомлень</p>
         </div>
 
         <div className="glass-card p-6">
           <Image className="w-12 h-12 text-neon-purple mb-4" />
           <h3 className="text-3xl font-bold text-white mb-2">{stats.sections}</h3>
-          <p className="text-white/60 font-rajdhani">Sections</p>
+          <p className="text-white/60 font-rajdhani">Розділів</p>
         </div>
 
         <div className="glass-card p-6">
           <Settings className="w-12 h-12 text-neon-cyan mb-4" />
-          <h3 className="text-xl font-bold text-white mb-2">System</h3>
-          <p className="text-green-400 font-rajdhani">Active</p>
+          <h3 className="text-xl font-bold text-white mb-2">Система</h3>
+          <p className="text-green-400 font-rajdhani">Активна</p>
         </div>
       </div>
 
       <div className="glass-card p-6">
         <h2 className="text-2xl font-bold font-orbitron text-neon-cyan mb-4">
-          Quick Access
+          Швидкий Доступ
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Link
@@ -196,8 +196,8 @@ function DashboardHome() {
             className="p-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-colors"
           >
             <FileText className="w-6 h-6 text-neon-cyan mb-2" />
-            <h3 className="font-semibold text-white mb-1">Редагувати Content</h3>
-            <p className="text-sm text-white/60 font-rajdhani">Change texts and contacts</p>
+            <h3 className="font-semibold text-white mb-1">Редагувати Контент</h3>
+            <p className="text-sm text-white/60 font-rajdhani">Змінити тексти та контакти</p>
           </Link>
 
           <Link
@@ -205,8 +205,8 @@ function DashboardHome() {
             className="p-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-colors"
           >
             <Image className="w-6 h-6 text-neon-purple mb-2" />
-            <h3 className="font-semibold text-white mb-1">Manage Sections</h3>
-            <p className="text-sm text-white/60 font-rajdhani">Add/change services</p>
+            <h3 className="font-semibold text-white mb-1">Керувати Розділами</h3>
+            <p className="text-sm text-white/60 font-rajdhani">Додати/змінити послуги</p>
           </Link>
 
           <Link
@@ -214,8 +214,8 @@ function DashboardHome() {
             className="p-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-colors"
           >
             <Mail className="w-6 h-6 text-neon-cyan mb-2" />
-            <h3 className="font-semibold text-white mb-1">Configure Email</h3>
-            <p className="text-sm text-white/60 font-rajdhani">Email configuration</p>
+            <h3 className="font-semibold text-white mb-1">Налаштувати Email</h3>
+            <p className="text-sm text-white/60 font-rajdhani">Конфігурація пошти</p>
           </Link>
 
           <Link
@@ -223,8 +223,8 @@ function DashboardHome() {
             className="p-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-colors"
           >
             <Bot className="w-6 h-6 text-neon-purple mb-2" />
-            <h3 className="font-semibold text-white mb-1">Налаштувати Chatbot</h3>
-            <p className="text-sm text-white/60 font-rajdhani">Preparation for integration</p>
+            <h3 className="font-semibold text-white mb-1">Налаштувати Чатбот</h3>
+            <p className="text-sm text-white/60 font-rajdhani">Підготовка до інтеграції</p>
           </Link>
         </div>
       </div>

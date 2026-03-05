@@ -50,7 +50,7 @@ export default function MessagesManagement({ onUpdate }) {
           Повідомлення
         </h1>
         <p className="text-white/60 font-rajdhani">
-          Total: {messages.length} | Unread: {messages.filter(m => !m.read).length}
+          Всього: {messages.length} | Непрочитані: {messages.filter(m => !m.read).length}
         </p>
       </div>
 
@@ -60,7 +60,7 @@ export default function MessagesManagement({ onUpdate }) {
           {messages.length === 0 ? (
             <div className="glass-card p-8 text-center">
               <Mail className="w-16 h-16 text-white/20 mx-auto mb-4" />
-              <p className="text-white/60 font-rajdhani">No messages yet</p>
+              <p className="text-white/60 font-rajdhani">Повідомлень ще немає</p>
             </div>
           ) : (
             messages.map((message) => (
@@ -105,7 +105,7 @@ export default function MessagesManagement({ onUpdate }) {
                 </h3>
                 {!selectedMessage.read && (
                   <span className="px-3 py-1 bg-neon-purple/20 border border-neon-purple/40 rounded-full text-neon-purple text-sm">
-                    New
+                    Нове
                   </span>
                 )}
               </div>
@@ -145,7 +145,7 @@ export default function MessagesManagement({ onUpdate }) {
 
                 <div className="pt-4 border-t border-white/10">
                   <p className="text-xs text-white/40 font-rajdhani">
-                    Received: {new Date(selectedMessage.timestamp).toLocaleString('uk-UA')}
+                    Отримано: {new Date(selectedMessage.timestamp).toLocaleString('uk-UA')}
                   </p>
                 </div>
               </div>
@@ -154,7 +154,7 @@ export default function MessagesManagement({ onUpdate }) {
             <div className="flex items-center justify-center h-full text-white/40">
               <div className="text-center">
                 <MessageSquare className="w-16 h-16 mx-auto mb-4 opacity-20" />
-                <p className="font-rajdhani">Select a message to view</p>
+                <p className="font-rajdhani">Оберіть повідомлення для перегляду</p>
               </div>
             </div>
           )}

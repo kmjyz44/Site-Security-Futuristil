@@ -53,7 +53,7 @@ export default function SectionsManagement() {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this section?')) return;
+    if (!window.confirm('Ви впевнені, що хочете видалити цей розділ?')) return;
     try {
       await axios.delete(`${API}/admin/sections/${id}`, getAuthHeaders());
       loadSections();
@@ -89,9 +89,9 @@ export default function SectionsManagement() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-4xl font-bold font-orbitron gradient-text mb-2">
-            Sections Management
+            Керування Розділами
           </h1>
-          <p className="text-white/60 font-rajdhani">Add, edit and delete services</p>
+          <p className="text-white/60 font-rajdhani">Додавання, редагування та видалення послуг</p>
         </div>
         <button
           onClick={() => setShowAddForm(!showAddForm)}
@@ -99,31 +99,31 @@ export default function SectionsManagement() {
           data-testid="add-section-btn"
         >
           {showAddForm ? <X className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
-          {showAddForm ? 'Cancel' : 'Add Section'}
+          {showAddForm ? 'Скасувати' : 'Додати Розділ'}
         </button>
       </div>
 
       {showAddForm && (
         <div className="glass-card p-6 space-y-4">
-          <h3 className="text-xl font-bold text-neon-cyan font-orbitron">New Section</h3>
+          <h3 className="text-xl font-bold text-neon-cyan font-orbitron">Новий Розділ</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <input
               type="text"
-              placeholder="Title"
+              placeholder="Заголовок"
               value={addForm.title}
               onChange={(e) => setAddForm({ ...addForm, title: e.target.value })}
               className="px-4 py-2 bg-[hsl(220,20%,10%)] border border-white/20 rounded-lg focus:border-neon-cyan focus:outline-none text-white"
             />
             <input
               type="text"
-              placeholder="Icon (shield, camera, zap, home, lock, tv)"
+              placeholder="Іконка (shield, camera, zap, home, lock, tv)"
               value={addForm.icon}
               onChange={(e) => setAddForm({ ...addForm, icon: e.target.value })}
               className="px-4 py-2 bg-[hsl(220,20%,10%)] border border-white/20 rounded-lg focus:border-neon-cyan focus:outline-none text-white"
             />
           </div>
           <textarea
-            placeholder="Description"
+            placeholder="Опис"
             value={addForm.description}
             onChange={(e) => setAddForm({ ...addForm, description: e.target.value })}
             rows={3}
@@ -131,7 +131,7 @@ export default function SectionsManagement() {
           />
           <input
             type="text"
-            placeholder="Image path (/images/...)"
+            placeholder="Шлях до зображення (/images/...)"
             value={addForm.image}
             onChange={(e) => setAddForm({ ...addForm, image: e.target.value })}
             className="w-full px-4 py-2 bg-[hsl(220,20%,10%)] border border-white/20 rounded-lg focus:border-neon-cyan focus:outline-none text-white"
@@ -139,7 +139,7 @@ export default function SectionsManagement() {
           <div className="flex gap-4">
             <input
               type="number"
-              placeholder="Order"
+              placeholder="Порядок"
               value={addForm.order}
               onChange={(e) => setAddForm({ ...addForm, order: parseInt(e.target.value) })}
               className="w-32 px-4 py-2 bg-[hsl(220,20%,10%)] border border-white/20 rounded-lg focus:border-neon-cyan focus:outline-none text-white"
@@ -193,7 +193,7 @@ export default function SectionsManagement() {
                     onClick={() => { setEditingId(null); setEditForm(null); }}
                     className="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/20 rounded-lg text-white transition-colors"
                   >
-                    Cancel
+                    Скасувати
                   </button>
                 </div>
               </div>
@@ -205,7 +205,7 @@ export default function SectionsManagement() {
                     <span className="text-sm text-white/40 font-rajdhani">#{section.order}</span>
                     {!section.visible && (
                       <span className="px-2 py-1 bg-white/10 text-xs text-white/60 rounded">
-                        Hidden
+                        Приховано
                       </span>
                     )}
                   </div>
@@ -216,7 +216,7 @@ export default function SectionsManagement() {
                   <button
                     onClick={() => toggleVisibility(section)}
                     className="p-2 hover:bg-white/5 rounded-lg transition-colors"
-                    title={section.visible ? 'Hide' : 'Show'}
+                    title={section.visible ? 'Приховати' : 'Показати'}
                   >
                     {section.visible ? (
                       <Eye className="w-5 h-5 text-green-400" />

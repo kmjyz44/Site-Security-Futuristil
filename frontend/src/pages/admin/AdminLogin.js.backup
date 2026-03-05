@@ -22,7 +22,7 @@ export default function AdminLogin() {
       localStorage.setItem('admin_token', data.access_token);
       navigate('/admin/dashboard');
     } catch (error) {
-      setError(error.response?.data?.detail || 'Login error');
+      setError(error.response?.data?.detail || 'Помилка входу');
     } finally {
       setLoading(false);
     }
@@ -40,7 +40,7 @@ export default function AdminLogin() {
             <Lock className="w-8 h-8 text-neon-cyan" />
           </div>
           <h1 className="text-3xl font-bold font-orbitron gradient-text">
-            Admin Panel
+            Адмін-Панель
           </h1>
           <p className="text-white/60 mt-2 font-rajdhani">Ввійдіть для керування сайтом</p>
         </div>
@@ -48,7 +48,7 @@ export default function AdminLogin() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-white/80 font-rajdhani mb-2">
-              Username
+              Логін
             </label>
             <div className="relative">
               <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-neon-cyan/50" />
@@ -58,7 +58,7 @@ export default function AdminLogin() {
                 value={credentials.username}
                 onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
                 className="w-full pl-12 pr-4 py-3 bg-[hsl(220,20%,10%)] border border-white/20 rounded-lg focus:border-neon-cyan focus:outline-none focus:ring-2 focus:ring-neon-cyan/20 text-white"
-                placeholder="Enter username"
+                placeholder="Введіть логін"
                 data-testid="admin-username"
               />
             </div>
@@ -66,7 +66,7 @@ export default function AdminLogin() {
 
           <div>
             <label className="block text-white/80 font-rajdhani mb-2">
-              Password
+              Пароль
             </label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-neon-cyan/50" />
@@ -76,7 +76,7 @@ export default function AdminLogin() {
                 value={credentials.password}
                 onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
                 className="w-full pl-12 pr-4 py-3 bg-[hsl(220,20%,10%)] border border-white/20 rounded-lg focus:border-neon-cyan focus:outline-none focus:ring-2 focus:ring-neon-cyan/20 text-white"
-                placeholder="Enter password"
+                placeholder="Введіть пароль"
                 data-testid="admin-password"
               />
             </div>
@@ -94,7 +94,7 @@ export default function AdminLogin() {
             className="w-full btn-neon"
             data-testid="admin-submit"
           >
-            {loading ? 'Logging in...' : 'Login'}
+            {loading ? 'Вхід...' : 'Увійти'}
           </button>
         </form>
 
@@ -106,7 +106,7 @@ export default function AdminLogin() {
 
         <div className="mt-6 p-4 bg-neon-purple/10 border border-neon-purple/30 rounded-lg">
           <p className="text-xs text-white/50 text-center font-rajdhani">
-            Default credentials: admin / admin123
+            Стандартні дані: admin / admin123
           </p>
         </div>
       </div>
