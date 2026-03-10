@@ -1,45 +1,45 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 export default function OriginalSite() {
-  const [loading, setLoading] = useState(true);
-
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 100);
-    return () => clearTimeout(timer);
+    // Load the original site's CSS and JS
+    const loadOriginalSite = async () => {
+      try {
+        // Load CSS
+        const cssLink = document.createElement('link');
+        cssLink.rel = 'stylesheet';
+        cssLink.href = '/assets/index-CqYjuW3T.css';
+        document.head.appendChild(cssLink);
+        
+        // Load JS
+        const script = document.createElement('script');
+        script.type = 'module';
+        script.src = '/assets/index-DEQl-a8G.js';
+        document.body.appendChild(script);
+        
+        // Load SEO and contact integration
+        const seoScript = document.createElement('script');
+        seoScript.src = '/seo-schema.js';
+        document.body.appendChild(seoScript);
+        
+        const contactScript = document.createElement('script');
+        contactScript.src = '/contact-integration.js';
+        document.body.appendChild(contactScript);
+        
+      } catch (error) {
+        console.error('Error loading original site:', error);
+      }
+    };
+    
+    loadOriginalSite();
+    
+    // Cleanup
+    return () => {
+      // Remove added styles and scripts when component unmounts
+      const links = document.querySelectorAll('link[href*="index-CqYjuW3T"]');
+      links.forEach(link => link.remove());
+    };
   }, []);
 
-  return (
-    <div style={{ width: '100%', height: '100vh', margin: 0, padding: 0, overflow: 'hidden' }}>
-      {loading && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          background: 'hsl(220, 25%, 5%)',
-          color: '#00e1ff',
-          fontFamily: 'Orbitron, sans-serif',
-          fontSize: '20px'
-        }}>
-          Loading...
-        </div>
-      )}
-      <iframe
-        src="/original.html"
-        style={{
-          width: '100%',
-          height: '100%',
-          border: 'none',
-          margin: 0,
-          padding: 0,
-          display: loading ? 'none' : 'block'
-        }}
-        title="SecureHome Chicago"
-      />
-    </div>
-  );
+  return null; // The original site will render in the root div
 }

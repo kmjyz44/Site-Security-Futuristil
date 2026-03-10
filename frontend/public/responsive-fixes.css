@@ -1,0 +1,236 @@
+/* Responsive Fixes and Enhancements */
+
+/* Ensure proper viewport scaling */
+html {
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* Container max-width for ultra-wide screens */
+@media (min-width: 1920px) {
+  .container,
+  section > div:first-child {
+    max-width: 1600px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+}
+
+/* Desktop optimizations (1200px - 1920px) */
+@media (min-width: 1200px) and (max-width: 1920px) {
+  body {
+    font-size: 16px;
+  }
+  
+  /* Hero section */
+  h1, .hero-title {
+    font-size: clamp(2.5rem, 5vw, 4rem) !important;
+    line-height: 1.2 !important;
+  }
+  
+  h2 {
+    font-size: clamp(2rem, 4vw, 3rem) !important;
+  }
+  
+  /* Better spacing */
+  section {
+    padding: 4rem 2rem !important;
+  }
+  
+  /* Grid improvements */
+  .grid {
+    gap: 2rem !important;
+  }
+}
+
+/* Tablet (768px - 1199px) */
+@media (min-width: 768px) and (max-width: 1199px) {
+  body {
+    font-size: 15px;
+  }
+  
+  section {
+    padding: 3rem 1.5rem !important;
+  }
+  
+  h1, .hero-title {
+    font-size: clamp(2rem, 4vw, 3rem) !important;
+  }
+  
+  /* Adjust button sizes */
+  button, .button, .btn {
+    padding: 0.75rem 1.5rem !important;
+    font-size: 0.95rem !important;
+  }
+}
+
+/* Mobile (up to 767px) */
+@media (max-width: 767px) {
+  body {
+    font-size: 14px;
+  }
+  
+  section {
+    padding: 2rem 1rem !important;
+  }
+  
+  h1, .hero-title {
+    font-size: clamp(1.75rem, 6vw, 2.5rem) !important;
+    line-height: 1.3 !important;
+  }
+  
+  h2 {
+    font-size: clamp(1.5rem, 5vw, 2rem) !important;
+  }
+  
+  /* Stack buttons vertically */
+  .button-group {
+    flex-direction: column !important;
+    gap: 1rem !important;
+  }
+  
+  button, .button, .btn {
+    width: 100% !important;
+    padding: 1rem !important;
+  }
+  
+  /* Improve form spacing */
+  input, textarea, select {
+    font-size: 16px !important; /* Prevents zoom on iOS */
+  }
+}
+
+/* Small mobile (up to 375px) */
+@media (max-width: 375px) {
+  section {
+    padding: 1.5rem 0.75rem !important;
+  }
+  
+  h1, .hero-title {
+    font-size: 1.75rem !important;
+  }
+}
+
+/* Images responsive */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Prevent horizontal scroll */
+* {
+  max-width: 100vw;
+}
+
+/* Better contact form on all screens */
+form {
+  width: 100% !important;
+  max-width: 600px !important;
+  margin: 0 auto !important;
+}
+
+form input,
+form textarea,
+form select {
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Navigation responsive */
+nav {
+  flex-wrap: wrap !important;
+}
+
+@media (max-width: 768px) {
+  nav {
+    justify-content: space-between !important;
+  }
+  
+  nav ul {
+    display: none; /* Hide desktop nav on mobile */
+  }
+  
+  .mobile-menu-toggle {
+    display: block !important;
+  }
+}
+
+/* Cards/Services grid */
+.services-grid,
+.card-grid {
+  display: grid !important;
+  gap: 2rem !important;
+}
+
+@media (min-width: 1200px) {
+  .services-grid,
+  .card-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1199px) {
+  .services-grid,
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .services-grid,
+  .card-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Better spacing for sections */
+section + section {
+  margin-top: 0 !important;
+}
+
+/* Ensure animations don't break layout */
+* {
+  animation-fill-mode: backwards !important;
+}
+
+/* Fix for elements that might overflow */
+.container,
+.wrapper,
+main,
+section {
+  overflow-x: hidden !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Better line height for readability */
+p, li {
+  line-height: 1.6 !important;
+}
+
+/* Accessibility improvements */
+:focus-visible {
+  outline: 2px solid #00e1ff !important;
+  outline-offset: 2px !important;
+}
+
+/* Print styles */
+@media print {
+  nav,
+  footer,
+  .no-print {
+    display: none !important;
+  }
+  
+  body {
+    background: white !important;
+    color: black !important;
+  }
+}
