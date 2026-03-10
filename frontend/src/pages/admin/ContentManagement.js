@@ -118,45 +118,118 @@ export default function ContentManagement() {
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
+        <div className="border-t border-white/10 pt-6">
+          <h3 className="text-xl font-bold text-neon-cyan mb-4 font-orbitron">Contact Information</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-white font-semibold mb-2 font-rajdhani">
+                Phone
+              </label>
+              <input
+                type="text"
+                value={content.phone}
+                onChange={(e) => setContent({ ...content, phone: e.target.value })}
+                className="w-full px-4 py-3 bg-[hsl(220,20%,10%)] border border-white/20 rounded-lg focus:border-neon-cyan focus:outline-none text-white"
+                data-testid="phone"
+              />
+            </div>
+
+            <div>
+              <label className="block text-white font-semibold mb-2 font-rajdhani">
+                Email
+              </label>
+              <input
+                type="email"
+                value={content.email}
+                onChange={(e) => setContent({ ...content, email: e.target.value })}
+                className="w-full px-4 py-3 bg-[hsl(220,20%,10%)] border border-white/20 rounded-lg focus:border-neon-cyan focus:outline-none text-white"
+                data-testid="email"
+              />
+            </div>
+          </div>
+
+          <div className="mt-4">
             <label className="block text-white font-semibold mb-2 font-rajdhani">
-              Phone
+              Address
             </label>
             <input
               type="text"
-              value={content.phone}
-              onChange={(e) => setContent({ ...content, phone: e.target.value })}
+              value={content.address}
+              onChange={(e) => setContent({ ...content, address: e.target.value })}
               className="w-full px-4 py-3 bg-[hsl(220,20%,10%)] border border-white/20 rounded-lg focus:border-neon-cyan focus:outline-none text-white"
-              data-testid="phone"
-            />
-          </div>
-
-          <div>
-            <label className="block text-white font-semibold mb-2 font-rajdhani">
-              Email
-            </label>
-            <input
-              type="email"
-              value={content.email}
-              onChange={(e) => setContent({ ...content, email: e.target.value })}
-              className="w-full px-4 py-3 bg-[hsl(220,20%,10%)] border border-white/20 rounded-lg focus:border-neon-cyan focus:outline-none text-white"
-              data-testid="email"
+              data-testid="address"
             />
           </div>
         </div>
 
-        <div>
-          <label className="block text-white font-semibold mb-2 font-rajdhani">
-            Address
-          </label>
-          <input
-            type="text"
-            value={content.address}
-            onChange={(e) => setContent({ ...content, address: e.target.value })}
-            className="w-full px-4 py-3 bg-[hsl(220,20%,10%)] border border-white/20 rounded-lg focus:border-neon-cyan focus:outline-none text-white"
-            data-testid="address"
-          />
+        <div className="border-t border-white/10 pt-6">
+          <h3 className="text-xl font-bold text-neon-cyan mb-4 font-orbitron">Social Media Links</h3>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-white font-semibold mb-2 font-rajdhani">
+                Facebook URL
+              </label>
+              <input
+                type="url"
+                value={content.facebook || ''}
+                onChange={(e) => setContent({ ...content, facebook: e.target.value })}
+                placeholder="https://facebook.com/yourpage"
+                className="w-full px-4 py-3 bg-[hsl(220,20%,10%)] border border-white/20 rounded-lg focus:border-neon-cyan focus:outline-none text-white"
+              />
+            </div>
+
+            <div>
+              <label className="block text-white font-semibold mb-2 font-rajdhani">
+                Instagram URL
+              </label>
+              <input
+                type="url"
+                value={content.instagram || ''}
+                onChange={(e) => setContent({ ...content, instagram: e.target.value })}
+                placeholder="https://instagram.com/yourprofile"
+                className="w-full px-4 py-3 bg-[hsl(220,20%,10%)] border border-white/20 rounded-lg focus:border-neon-cyan focus:outline-none text-white"
+              />
+            </div>
+
+            <div>
+              <label className="block text-white font-semibold mb-2 font-rajdhani">
+                Twitter URL
+              </label>
+              <input
+                type="url"
+                value={content.twitter || ''}
+                onChange={(e) => setContent({ ...content, twitter: e.target.value })}
+                placeholder="https://twitter.com/yourhandle"
+                className="w-full px-4 py-3 bg-[hsl(220,20%,10%)] border border-white/20 rounded-lg focus:border-neon-cyan focus:outline-none text-white"
+              />
+            </div>
+
+            <div>
+              <label className="block text-white font-semibold mb-2 font-rajdhani">
+                LinkedIn URL
+              </label>
+              <input
+                type="url"
+                value={content.linkedin || ''}
+                onChange={(e) => setContent({ ...content, linkedin: e.target.value })}
+                placeholder="https://linkedin.com/company/yourcompany"
+                className="w-full px-4 py-3 bg-[hsl(220,20%,10%)] border border-white/20 rounded-lg focus:border-neon-cyan focus:outline-none text-white"
+              />
+            </div>
+
+            <div>
+              <label className="block text-white font-semibold mb-2 font-rajdhani">
+                YouTube URL
+              </label>
+              <input
+                type="url"
+                value={content.youtube || ''}
+                onChange={(e) => setContent({ ...content, youtube: e.target.value })}
+                placeholder="https://youtube.com/@yourchannel"
+                className="w-full px-4 py-3 bg-[hsl(220,20%,10%)] border border-white/20 rounded-lg focus:border-neon-cyan focus:outline-none text-white"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>

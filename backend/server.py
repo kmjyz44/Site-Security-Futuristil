@@ -91,6 +91,11 @@ class SiteContent(BaseModel):
     phone: str = "+1 (312) 555-0100"
     email: str = "info@securehome.com"
     address: str = "Chicago, IL"
+    facebook: str = ""
+    instagram: str = ""
+    twitter: str = ""
+    linkedin: str = ""
+    youtube: str = ""
 
 class SiteContentUpdate(BaseModel):
     hero_title: Optional[str] = None
@@ -99,6 +104,11 @@ class SiteContentUpdate(BaseModel):
     phone: Optional[str] = None
     email: Optional[str] = None
     address: Optional[str] = None
+    facebook: Optional[str] = None
+    instagram: Optional[str] = None
+    twitter: Optional[str] = None
+    linkedin: Optional[str] = None
+    youtube: Optional[str] = None
 
 class ContactMessage(BaseModel):
     name: str
