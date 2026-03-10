@@ -210,24 +210,65 @@ async def get_sections():
     return [Section(**s) for s in sections]
 
 @api_router.post("/contact")
-async def contact_form(message: ContactMessage):
+async def contact_form(
+    name: str = Form(...),
+    email: str = Form(...),
+    phone: str = Form(None),
+    message: str = Form(...),
+    photos: List[UploadFile] = File(None)
+):
+    # Save uploaded photos
+    photo_urls = []
+    if photos:
+        import os
+        upload_dir = "/app/frontend/public/uploads"
+        os.makedirs(upload_dir, exist_ok=True)
+        
+        for photo in photos:
+            if photo.filename:
+                # Generate unique filename
+                file_ext = photo.filename.split('.')[-1]
+                unique_filename = f"{uuid.uuid4()}.{file_ext}"
+                file_path = os.path.join(upload_dir, unique_filename)
+                
+                # Save file
+                with open(file_path, "wb") as buffer:
+                    content = await photo.read()
+                    buffer.write(content)
+                
+                photo_urls.append(f"/uploads/{unique_filename}")
+    
     # Save message to DB
-    message_dict = message.model_dump()
-    message_dict['timestamp'] = datetime.now(timezone.utc).isoformat()
-    message_dict['read'] = False
+    message_dict = {
+        'name': name,
+        'email': email,
+        'phone': phone,
+        'message': message,
+        'photos': photo_urls,
+        'timestamp': datetime.now(timezone.utc).isoformat(),
+        'read': False
+    }
     await db.messages.insert_one(message_dict)
     
     # Send email
     email_settings = await db.email_settings.find_one({}, {"_id": 0})
     if email_settings:
-        subject = f"New message from {message.name}"
+        subject = f"New message from {name}"
+        photos_html = ""
+        if photo_urls:
+            photos_html = "<p><strong>Attached photos:</strong></p><ul>"
+            for url in photo_urls:
+                photos_html += f'<li><a href="{url}">{url}</a></li>'
+            photos_html += "</ul>"
+        
         html = f"""
         <h2>New message from website</h2>
-        <p><strong>Name:</strong> {message.name}</p>
-        <p><strong>Email:</strong> {message.email}</p>
-        <p><strong>Phone:</strong> {message.phone or 'Not provided'}</p>
+        <p><strong>Name:</strong> {name}</p>
+        <p><strong>Email:</strong> {email}</p>
+        <p><strong>Phone:</strong> {phone or 'Not provided'}</p>
         <p><strong>Message:</strong></p>
-        <p>{message.message}</p>
+        <p>{message}</p>
+        {photos_html}
         """
         
         try:
