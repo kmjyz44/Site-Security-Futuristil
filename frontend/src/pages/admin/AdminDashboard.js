@@ -3,13 +3,14 @@ import { Routes, Route, Navigate, useNavigate, Link, useLocation } from 'react-r
 import axios from 'axios';
 import { 
   LayoutDashboard, FileText, Image, Mail, Bot, LogOut, 
-  Menu, X, Settings, MessageSquare 
+  Menu, X, Settings, MessageSquare, Lock
 } from 'lucide-react';
 import ContentManagement from './ContentManagement';
 import SectionsManagement from './SectionsManagement';
 import EmailSettings from './EmailSettings';
 import MessagesManagement from './MessagesManagement';
 import ChatbotSettings from './ChatbotSettings';
+import ChangePassword from './ChangePassword';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -52,6 +53,7 @@ export default function AdminDashboard() {
     { path: '/admin/messages', icon: MessageSquare, label: 'Messages', badge: unreadCount },
     { path: '/admin/email', icon: Mail, label: 'Email' },
     { path: '/admin/chatbot', icon: Bot, label: 'Chatbot' },
+    { path: '/admin/password', icon: Lock, label: 'Password' },
   ];
 
   return (
@@ -127,6 +129,7 @@ export default function AdminDashboard() {
             <Route path="messages" element={<MessagesManagement onUpdate={loadUnreadCount} />} />
             <Route path="email" element={<EmailSettings />} />
             <Route path="chatbot" element={<ChatbotSettings />} />
+            <Route path="password" element={<ChangePassword />} />
             <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
           </Routes>
         </div>
