@@ -35,12 +35,34 @@ export default function EmailSettings() {
   const handleSave = async () => {
     setLoading(true);
     setMessage('');
+    
+    // Validate emails
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(settings.from_email)) {
+      setMessage('❌ Invalid From Email! Must be: example@domain.com');
+      setLoading(false);
+      return;
+    }
+    if (!emailRegex.test(settings.to_email)) {
+      setMessage('❌ Invalid To Email! Must be: example@domain.com');
+      setLoading(false);
+      return;
+    }
+    
+    // Validate API key
+    if (!settings.api_key || settings.api_key.length < 10) {
+      setMessage('❌ API Key is required and must be valid');
+      setLoading(false);
+      return;
+    }
+    
     try {
       await axios.put(`${API}/admin/email-settings`, settings, getAuthHeaders());
-      setMessage('Settings saved!');
+      setMessage('✅ Settings saved successfully!');
       setTimeout(() => setMessage(''), 3000);
     } catch (error) {
-      setMessage('Error збереження');
+      const errorMsg = error.response?.data?.detail || 'Error saving';
+      setMessage(`❌ ${errorMsg}`);
       console.error('Error saving email settings:', error);
     } finally {
       setLoading(false);
