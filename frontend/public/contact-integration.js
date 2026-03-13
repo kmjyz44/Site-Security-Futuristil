@@ -1,209 +1,195 @@
-// Contact Form Integration Script with Photo Upload
+// Enhanced Contact Form Integration with Better Detection
 (function() {
   'use strict';
   
   const API_URL = window.location.origin + '/api/contact';
+  let formConnected = false;
   
-  function initContactForm() {
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', setupFormHandler);
-    } else {
-      setupFormHandler();
-    }
+  console.log('🚀 Contact Form Integration Loading...');
+  
+  function waitForForm() {
+    const maxAttempts = 20;
+    let attempts = 0;
+    
+    const interval = setInterval(() => {
+      attempts++;
+      
+      if (formConnected) {
+        clearInterval(interval);
+        return;
+      }
+      
+      const forms = document.querySelectorAll('form');
+      console.log(`📝 Attempt ${attempts}: Found ${forms.length} forms`);
+      
+      forms.forEach(form => {
+        if (formConnected) return;
+        
+        const hasEmail = form.querySelector('input[type="email"]');
+        const hasTextarea = form.querySelector('textarea');
+        
+        if (hasEmail && hasTextarea && !form.dataset.connected) {
+          console.log('✅ Contact form found! Connecting...');
+          connectForm(form);
+          form.dataset.connected = 'true';
+          formConnected = true;
+          clearInterval(interval);
+        }
+      });
+      
+      if (attempts >= maxAttempts) {
+        console.warn('⚠️ Contact form not found after', maxAttempts, 'attempts');
+        clearInterval(interval);
+      }
+    }, 500);
   }
   
-  function setupFormHandler() {
-    const forms = document.querySelectorAll('form');
+  function connectForm(form) {
+    console.log('🔌 Connecting form to API:', API_URL);
     
-    forms.forEach(form => {
-      const hasNameField = form.querySelector('input[name*="name"], input[placeholder*="name" i]');
-      const hasEmailField = form.querySelector('input[type="email"], input[name*="email"]');
-      const hasMessageField = form.querySelector('textarea');
+    // Add photo upload if not exists
+    addPhotoUpload(form);
+    
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      e.stopPropagation();
       
-      if (hasNameField && hasEmailField && hasMessageField) {
-        console.log('✓ Contact form found and enhanced with photo upload');
+      console.log('📤 Form submitted!');
+      
+      const formData = new FormData();
+      
+      // Get all inputs
+      const inputs = form.querySelectorAll('input, textarea');
+      inputs.forEach(input => {
+        if (input.type === 'file') {
+          if (input.files) {
+            for (let file of input.files) {
+              formData.append('photos', file);
+            }
+          }
+        } else if (input.name) {
+          formData.append(input.name, input.value);
+        } else {
+          // Try to guess field by type/placeholder
+          if (input.type === 'email') {
+            formData.append('email', input.value);
+          } else if (input.type === 'tel') {
+            formData.append('phone', input.value);
+          } else if (input.type === 'text') {
+            if (!formData.has('name')) {
+              formData.append('name', input.value);
+            }
+          }
+        }
+      });
+      
+      // Textarea
+      const textarea = form.querySelector('textarea');
+      if (textarea) {
+        formData.append('message', textarea.value);
+      }
+      
+      console.log('📦 FormData prepared');
+      
+      // Show loading
+      const submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
+      let originalText = '';
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        originalText = submitBtn.textContent || submitBtn.value;
+        if (submitBtn.tagName === 'BUTTON') {
+          submitBtn.textContent = 'Sending...';
+        } else {
+          submitBtn.value = 'Sending...';
+        }
+      }
+      
+      try {
+        console.log('🌐 Sending to:', API_URL);
         
-        // Add photo upload field if not exists
-        addPhotoUploadField(form);
-        
-        form.addEventListener('submit', async function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-          
-          // Create FormData
-          const formData = new FormData();
-          
-          // Get text fields
-          const nameInput = form.querySelector('input[name*="name"], input[placeholder*="name" i]');
-          const emailInput = form.querySelector('input[type="email"], input[name*="email"]');
-          const phoneInput = form.querySelector('input[type="tel"], input[name*="phone"]');
-          const messageInput = form.querySelector('textarea');
-          
-          formData.append('name', nameInput?.value || '');
-          formData.append('email', emailInput?.value || '');
-          formData.append('phone', phoneInput?.value || '');
-          formData.append('message', messageInput?.value || '');
-          
-          // Add photos
-          const photoInput = form.querySelector('input[type="file"][name="photos"]');
-          if (photoInput && photoInput.files) {
-            for (let i = 0; i < photoInput.files.length; i++) {
-              formData.append('photos', photoInput.files[i]);
-            }
-          }
-          
-          // Show loading
-          const submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
-          const originalText = submitBtn?.textContent || submitBtn?.value || '';
-          if (submitBtn) {
-            submitBtn.disabled = true;
-            if (submitBtn.tagName === 'BUTTON') {
-              submitBtn.textContent = 'Sending...';
-            } else {
-              submitBtn.value = 'Sending...';
-            }
-          }
-          
-          try {
-            const response = await fetch(API_URL, {
-              method: 'POST',
-              body: formData
-            });
-            
-            const result = await response.json();
-            
-            if (response.ok && result.success) {
-              showNotification('Message sent successfully! We will contact you soon.', 'success');
-              form.reset();
-              clearPhotoPreview(form);
-            } else {
-              showNotification('Error sending message. Please try again.', 'error');
-            }
-          } catch (error) {
-            console.error('Contact form error:', error);
-            showNotification('Error sending message. Please try again.', 'error');
-          } finally {
-            if (submitBtn) {
-              submitBtn.disabled = false;
-              if (submitBtn.tagName === 'BUTTON') {
-                submitBtn.textContent = originalText;
-              } else {
-                submitBtn.value = originalText;
-              }
-            }
-          }
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          body: formData
         });
+        
+        console.log('📥 Response status:', response.status);
+        
+        const result = await response.json();
+        console.log('📋 Response data:', result);
+        
+        if (response.ok && result.success) {
+          showNotification('✅ Message sent successfully!', 'success');
+          form.reset();
+          clearPhotoPreview(form);
+        } else {
+          showNotification('❌ Error sending message', 'error');
+        }
+      } catch (error) {
+        console.error('❌ Error:', error);
+        showNotification('❌ Error sending message', 'error');
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          if (submitBtn.tagName === 'BUTTON') {
+            submitBtn.textContent = originalText;
+          } else {
+            submitBtn.value = originalText;
+          }
+        }
       }
     });
+    
+    console.log('✅ Form connected successfully!');
   }
   
-  function addPhotoUploadField(form) {
-    // Check if already added
+  function addPhotoUpload(form) {
     if (form.querySelector('input[name="photos"]')) return;
     
-    // Find the best place to insert (after message field)
-    const messageField = form.querySelector('textarea');
-    if (!messageField) return;
+    const textarea = form.querySelector('textarea');
+    if (!textarea) return;
     
-    const messageContainer = messageField.parentElement;
+    const container = textarea.parentElement;
     
-    // Create photo upload container
-    const photoContainer = document.createElement('div');
-    photoContainer.style.cssText = 'margin-top: 1rem;';
-    
-    const label = document.createElement('label');
-    label.style.cssText = 'display: block; color: rgba(255,255,255,0.8); margin-bottom: 0.5rem; font-family: Rajdhani, sans-serif;';
-    label.textContent = 'Attach Photos (optional)';
-    
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.name = 'photos';
-    input.accept = 'image/*';
-    input.multiple = true;
-    input.style.cssText = `
-      width: 100%;
-      padding: 0.75rem;
-      background: hsl(220, 20%, 10%);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 0.5rem;
-      color: white;
-      font-family: Rajdhani, sans-serif;
-      cursor: pointer;
+    const photoDiv = document.createElement('div');
+    photoDiv.style.marginTop = '1rem';
+    photoDiv.innerHTML = `
+      <label style="display: block; margin-bottom: 0.5rem; color: rgba(255,255,255,0.8);">
+        Attach Photos (optional)
+      </label>
+      <input 
+        type="file" 
+        name="photos" 
+        accept="image/*" 
+        multiple 
+        style="width: 100%; padding: 0.75rem; background: hsl(220, 20%, 10%); border: 1px solid rgba(255,255,255,0.2); border-radius: 0.5rem; color: white;"
+      />
+      <div class="photo-preview" style="display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap;"></div>
     `;
     
-    // Preview container
-    const previewContainer = document.createElement('div');
-    previewContainer.className = 'photo-preview-container';
-    previewContainer.style.cssText = `
-      display: flex;
-      gap: 0.5rem;
-      margin-top: 0.5rem;
-      flex-wrap: wrap;
-    `;
+    container.parentElement.insertBefore(photoDiv, container.nextSibling);
     
-    input.addEventListener('change', function(e) {
-      previewContainer.innerHTML = '';
-      const files = e.target.files;
-      
-      for (let i = 0; i < Math.min(files.length, 5); i++) {
-        const file = files[i];
+    const fileInput = photoDiv.querySelector('input[type="file"]');
+    const preview = photoDiv.querySelector('.photo-preview');
+    
+    fileInput.addEventListener('change', function(e) {
+      preview.innerHTML = '';
+      for (let i = 0; i < Math.min(e.target.files.length, 5); i++) {
+        const file = e.target.files[i];
         const reader = new FileReader();
-        
         reader.onload = function(event) {
-          const preview = document.createElement('div');
-          preview.style.cssText = `
-            position: relative;
-            width: 80px;
-            height: 80px;
-            border-radius: 0.5rem;
-            overflow: hidden;
-            border: 2px solid rgba(0, 225, 255, 0.3);
-          `;
-          
           const img = document.createElement('img');
           img.src = event.target.result;
-          img.style.cssText = 'width: 100%; height: 100%; object-fit: cover;';
-          
+          img.style.cssText = 'width: 80px; height: 80px; object-fit: cover; border-radius: 0.5rem; border: 2px solid rgba(0,225,255,0.3);';
           preview.appendChild(img);
-          previewContainer.appendChild(preview);
         };
-        
         reader.readAsDataURL(file);
       }
-      
-      if (files.length > 5) {
-        const moreText = document.createElement('div');
-        moreText.textContent = `+${files.length - 5} more`;
-        moreText.style.cssText = `
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 80px;
-          height: 80px;
-          background: rgba(0, 225, 255, 0.1);
-          border: 2px solid rgba(0, 225, 255, 0.3);
-          border-radius: 0.5rem;
-          color: #00e1ff;
-          font-size: 0.875rem;
-          font-weight: 600;
-        `;
-        previewContainer.appendChild(moreText);
-      }
     });
-    
-    photoContainer.appendChild(label);
-    photoContainer.appendChild(input);
-    photoContainer.appendChild(previewContainer);
-    
-    // Insert after message container
-    messageContainer.parentElement.insertBefore(photoContainer, messageContainer.nextSibling);
   }
   
   function clearPhotoPreview(form) {
-    const previewContainer = form.querySelector('.photo-preview-container');
-    if (previewContainer) {
-      previewContainer.innerHTML = '';
-    }
+    const preview = form.querySelector('.photo-preview');
+    if (preview) preview.innerHTML = '';
   }
   
   function showNotification(message, type) {
@@ -216,15 +202,13 @@
       background: ${type === 'success' ? '#00e1ff' : '#ef4444'};
       color: ${type === 'success' ? '#0a0c10' : '#fff'};
       border-radius: 8px;
-      font-family: 'Rajdhani', sans-serif;
       font-weight: 600;
       font-size: 16px;
-      box-shadow: 0 10px 30px rgba(0, 225, 255, 0.3);
+      box-shadow: 0 10px 30px rgba(0,225,255,0.3);
       z-index: 10000;
       animation: slideIn 0.3s ease-out;
     `;
     notification.textContent = message;
-    
     document.body.appendChild(notification);
     
     setTimeout(() => {
@@ -233,18 +217,25 @@
     }, 5000);
   }
   
-  const style = document.createElement('style');
-  style.textContent = `
-    @keyframes slideIn {
-      from { transform: translateX(400px); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
-    @keyframes slideOut {
-      from { transform: translateX(0); opacity: 1; }
-      to { transform: translateX(400px); opacity: 0; }
-    }
-  `;
-  document.head.appendChild(style);
+  // Start watching for form
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', waitForForm);
+  } else {
+    waitForForm();
+  }
   
-  initContactForm();
+  // Also watch for URL changes (for React Router)
+  let lastUrl = location.href;
+  new MutationObserver(() => {
+    const url = location.href;
+    if (url !== lastUrl) {
+      lastUrl = url;
+      if (!formConnected) {
+        console.log('🔄 URL changed, searching for form again...');
+        setTimeout(waitForForm, 500);
+      }
+    }
+  }).observe(document, {subtree: true, childList: true});
+  
+  console.log('✅ Contact Form Integration Ready');
 })();
