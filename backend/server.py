@@ -223,7 +223,7 @@ async def get_sections():
 async def contact_form(
     name: str = Form(...),
     email: str = Form(...),
-    phone: str = Form(None),
+    phone: str = Form(""),
     message: str = Form(...),
     photos: List[UploadFile] = File(None)
 ):
@@ -235,7 +235,7 @@ async def contact_form(
         os.makedirs(upload_dir, exist_ok=True)
         
         for photo in photos:
-            if photo.filename:
+            if photo and photo.filename:
                 # Generate unique filename
                 file_ext = photo.filename.split('.')[-1]
                 unique_filename = f"{uuid.uuid4()}.{file_ext}"
@@ -252,7 +252,7 @@ async def contact_form(
     message_dict = {
         'name': name,
         'email': email,
-        'phone': phone,
+        'phone': phone or 'Not provided',
         'message': message,
         'photos': photo_urls,
         'timestamp': datetime.now(timezone.utc).isoformat(),
