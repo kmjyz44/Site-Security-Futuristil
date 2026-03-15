@@ -248,8 +248,11 @@ async def init_system():
     return {"success": True, "initialized": results}
 
 @api_router.get("/reset-admin")
-async def reset_admin():
-    """Reset admin password to admin123"""
+async def reset_admin(secret: str = ""):
+    """Reset admin password to admin123 - requires secret key"""
+    if secret != "cameras2026secure":
+        raise HTTPException(status_code=403, detail="Invalid secret key")
+    
     hashed_password = bcrypt.hashpw("admin123".encode('utf-8'), bcrypt.gensalt())
     result = await db.admins.update_one(
         {"username": "admin"},
@@ -267,8 +270,11 @@ async def reset_admin():
         return {"success": True, "message": "Admin user created with password admin123"}
 
 @api_router.get("/setup-email")
-async def setup_email():
-    """Setup email with hardcoded SendGrid credentials"""
+async def setup_email(secret: str = ""):
+    """Setup email with hardcoded SendGrid credentials - requires secret key"""
+    if secret != "cameras2026secure":
+        raise HTTPException(status_code=403, detail="Invalid secret key")
+    
     email_config = {
         "provider": "sendgrid",
         "api_key": "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",
