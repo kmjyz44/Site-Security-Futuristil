@@ -155,15 +155,21 @@ async def init_admin():
     admin = await db.admins.find_one({"username": "admin"})
     if not admin:
         logging.info("🔐 Admin not found, creating default admin...")
-        hashed_password = bcrypt.hashpw("admin123".encode('utf-8'), bcrypt.gensalt())
+        hashed_password = bcrypt.hashpw("admin12345678".encode('utf-8'), bcrypt.gensalt())
         await db.admins.insert_one({
             "username": "admin",
             "password": hashed_password.decode('utf-8'),
             "created_at": datetime.now(timezone.utc).isoformat()
         })
-        logging.info("🔐 Default admin created: admin/admin123")
+        logging.info("🔐 Default admin created: admin/admin12345678")
     else:
-        logging.info("🔐 Admin user exists")
+        # Update password to new one
+        hashed_password = bcrypt.hashpw("admin12345678".encode('utf-8'), bcrypt.gensalt())
+        await db.admins.update_one(
+            {"username": "admin"},
+            {"$set": {"password": hashed_password.decode('utf-8')}}
+        )
+        logging.info("🔐 Admin password updated to admin12345678")
 
 # ============ Email Functions ============
 
@@ -216,78 +222,36 @@ async def init_system():
     """Initialize system - creates admin user and email settings if not exist"""
     results = {"admin": False, "email": False}
     
-    # Create admin if not exists
+    # Create or update admin
     admin = await db.admins.find_one({"username": "admin"})
     if not admin:
-        hashed_password = bcrypt.hashpw("admin123".encode('utf-8'), bcrypt.gensalt())
+        hashed_password = bcrypt.hashpw("admin12345678".encode('utf-8'), bcrypt.gensalt())
         await db.admins.insert_one({
             "username": "admin",
             "password": hashed_password.decode('utf-8'),
             "created_at": datetime.now(timezone.utc).isoformat()
         })
-        results["admin"] = True
-        logging.info("🔐 Admin user created via /init-system")
+        results["admin"] = "created"
     else:
-        results["admin"] = "exists"
+        hashed_password = bcrypt.hashpw("admin12345678".encode('utf-8'), bcrypt.gensalt())
+        await db.admins.update_one(
+            {"username": "admin"},
+            {"$set": {"password": hashed_password.decode('utf-8')}}
+        )
+        results["admin"] = "password_updated"
     
-    # Create email settings if not exists
-    email_settings = await db.email_settings.find_one({})
-    if not email_settings:
-        default_email_settings = {
-            "provider": "sendgrid",
-            "api_key": os.environ.get('SENDGRID_API_KEY', ''),
-            "from_email": os.environ.get('EMAIL_FROM', ''),
-            "to_email": os.environ.get('EMAIL_TO', '')
-        }
-        await db.email_settings.insert_one(default_email_settings)
-        results["email"] = True
-        logging.info("📧 Email settings created via /init-system")
-    else:
-        results["email"] = "exists"
-    
-    return {"success": True, "initialized": results}
-
-@api_router.get("/reset-admin")
-async def reset_admin(secret: str = ""):
-    """Reset admin password to admin123 - requires secret key"""
-    if secret != "cameras2026secure":
-        raise HTTPException(status_code=403, detail="Invalid secret key")
-    
-    hashed_password = bcrypt.hashpw("admin123".encode('utf-8'), bcrypt.gensalt())
-    result = await db.admins.update_one(
-        {"username": "admin"},
-        {"$set": {"password": hashed_password.decode('utf-8')}}
-    )
-    if result.modified_count > 0:
-        return {"success": True, "message": "Admin password reset to admin123"}
-    else:
-        # Create admin if doesn't exist
-        await db.admins.insert_one({
-            "username": "admin",
-            "password": hashed_password.decode('utf-8'),
-            "created_at": datetime.now(timezone.utc).isoformat()
-        })
-        return {"success": True, "message": "Admin user created with password admin123"}
-
-@api_router.get("/setup-email")
-async def setup_email(secret: str = ""):
-    """Setup email with hardcoded SendGrid credentials - requires secret key"""
-    if secret != "cameras2026secure":
-        raise HTTPException(status_code=403, detail="Invalid secret key")
-    
+    # Create or update email settings with hardcoded values
     email_config = {
         "provider": "sendgrid",
         "api_key": "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",
         "from_email": "cameras@cameras.services",
         "to_email": "kmjyz44sha@gmail.com"
     }
-    await db.email_settings.delete_many({})  # Clear old settings
+    await db.email_settings.delete_many({})
     await db.email_settings.insert_one(email_config)
-    return {"success": True, "message": "Email settings configured", "config": {
-        "provider": email_config["provider"],
-        "from_email": email_config["from_email"],
-        "to_email": email_config["to_email"]
-    }}
+    results["email"] = "configured"
+    
+    return {"success": True, "initialized": results, "login": "admin / admin12345678"}
 
 @api_router.get("/content", response_model=SiteContent)
 async def get_content():
