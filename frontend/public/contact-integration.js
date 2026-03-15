@@ -34,6 +34,13 @@
   function enhanceForm(form) {
     console.log('🔧 Enhancing form with photo upload...');
     
+    // Remove required from select to prevent HTML5 validation blocking
+    const selectField = form.querySelector('select');
+    if (selectField) {
+      selectField.removeAttribute('required');
+      console.log('🔓 Removed required from select field');
+    }
+    
     // Find the message field (textarea)
     const messageField = form.querySelector('textarea');
     if (!messageField) return;
@@ -173,6 +180,12 @@
         formData.append('phone', phoneInput.value.trim());
       } else {
         formData.append('phone', '');
+      }
+      
+      // Service field
+      const serviceSelect = form.querySelector('select');
+      if (serviceSelect && serviceSelect.value) {
+        formData.append('service', serviceSelect.value);
       }
       
       // Photos

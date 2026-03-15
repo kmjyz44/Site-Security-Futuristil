@@ -227,6 +227,7 @@ async def contact_form(
     email: str = Form(...),
     phone: str = Form(""),
     message: str = Form(...),
+    service: str = Form(""),
     photos: List[UploadFile] = File(None)
 ):
     # Save uploaded photos
@@ -255,6 +256,7 @@ async def contact_form(
         'name': name,
         'email': email,
         'phone': phone or 'Not provided',
+        'service': service or 'Not specified',
         'message': message,
         'photos': photo_urls,
         'timestamp': datetime.now(timezone.utc).isoformat(),
@@ -282,6 +284,7 @@ async def contact_form(
         <p><strong>Name:</strong> {name}</p>
         <p><strong>Email:</strong> {email}</p>
         <p><strong>Phone:</strong> {phone or 'Not provided'}</p>
+        <p><strong>Service:</strong> {service or 'Not specified'}</p>
         <p><strong>Message:</strong></p>
         <p>{message}</p>
         {photos_html}
