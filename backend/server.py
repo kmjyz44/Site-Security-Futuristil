@@ -247,6 +247,42 @@ async def init_system():
     
     return {"success": True, "initialized": results}
 
+@api_router.get("/reset-admin")
+async def reset_admin():
+    """Reset admin password to admin123"""
+    hashed_password = bcrypt.hashpw("admin123".encode('utf-8'), bcrypt.gensalt())
+    result = await db.admins.update_one(
+        {"username": "admin"},
+        {"$set": {"password": hashed_password.decode('utf-8')}}
+    )
+    if result.modified_count > 0:
+        return {"success": True, "message": "Admin password reset to admin123"}
+    else:
+        # Create admin if doesn't exist
+        await db.admins.insert_one({
+            "username": "admin",
+            "password": hashed_password.decode('utf-8'),
+            "created_at": datetime.now(timezone.utc).isoformat()
+        })
+        return {"success": True, "message": "Admin user created with password admin123"}
+
+@api_router.get("/setup-email")
+async def setup_email():
+    """Setup email with hardcoded SendGrid credentials"""
+    email_config = {
+        "provider": "sendgrid",
+        "api_key": "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",
+        "from_email": "cameras@cameras.services",
+        "to_email": "kmjyz44sha@gmail.com"
+    }
+    await db.email_settings.delete_many({})  # Clear old settings
+    await db.email_settings.insert_one(email_config)
+    return {"success": True, "message": "Email settings configured", "config": {
+        "provider": email_config["provider"],
+        "from_email": email_config["from_email"],
+        "to_email": email_config["to_email"]
+    }}
+
 @api_router.get("/content", response_model=SiteContent)
 async def get_content():
     content = await db.site_content.find_one({}, {"_id": 0})
