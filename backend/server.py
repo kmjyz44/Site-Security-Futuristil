@@ -274,12 +274,12 @@ async def contact_form(
     
     # Use hardcoded defaults if no settings in database
     if not email_settings:
-        logging.info("📧 No settings in DB, using hardcoded defaults")
+        logging.info("📧 No settings in DB, using env defaults")
         email_settings = {
             "provider": "sendgrid",
-            "api_key": "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",
-            "from_email": "cameras@cameras.services",
-            "to_email": "kmjyz44sha@gmail.com"
+            "api_key": os.environ.get('SENDGRID_API_KEY', ''),
+            "from_email": os.environ.get('EMAIL_FROM', ''),
+            "to_email": os.environ.get('EMAIL_TO', '')
         }
     
     logging.info(f"📧 Email settings found: True")
@@ -517,9 +517,9 @@ async def startup():
     if not email_settings:
         default_email_settings = {
             "provider": "sendgrid",
-            "api_key": "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",
-            "from_email": "cameras@cameras.services",
-            "to_email": "kmjyz44sha@gmail.com"
+            "api_key": os.environ.get('SENDGRID_API_KEY', ''),
+            "from_email": os.environ.get('EMAIL_FROM', ''),
+            "to_email": os.environ.get('EMAIL_TO', '')
         }
         await db.email_settings.insert_one(default_email_settings)
         logging.info("📧 Default email settings initialized")
