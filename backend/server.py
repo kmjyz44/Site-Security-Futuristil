@@ -151,15 +151,19 @@ async def verify_token(credentials: HTTPAuthorizationCredentials = Depends(secur
 
 async def init_admin():
     """Initialize default admin user if not exists"""
+    logging.info("🔐 Checking for admin user...")
     admin = await db.admins.find_one({"username": "admin"})
     if not admin:
+        logging.info("🔐 Admin not found, creating default admin...")
         hashed_password = bcrypt.hashpw("admin123".encode('utf-8'), bcrypt.gensalt())
         await db.admins.insert_one({
             "username": "admin",
             "password": hashed_password.decode('utf-8'),
             "created_at": datetime.now(timezone.utc).isoformat()
         })
-        logging.info("Default admin created: admin/admin123")
+        logging.info("🔐 Default admin created: admin/admin123")
+    else:
+        logging.info("🔐 Admin user exists")
 
 # ============ Email Functions ============
 
