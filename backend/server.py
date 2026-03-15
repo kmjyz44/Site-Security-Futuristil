@@ -182,6 +182,7 @@ async def send_email_via_resend(api_key: str, from_email: str, to_email: str, su
         return response.status_code == 200
 
 async def send_email_via_sendgrid(api_key: str, from_email: str, to_email: str, subject: str, html: str):
+    logging.info(f"📧 SendGrid: Sending email from {from_email} to {to_email}")
     async with httpx.AsyncClient() as client:
         response = await client.post(
             "https://api.sendgrid.com/v3/mail/send",
@@ -197,6 +198,7 @@ async def send_email_via_sendgrid(api_key: str, from_email: str, to_email: str, 
             },
             timeout=10.0
         )
+        logging.info(f"📧 SendGrid Response: {response.status_code} - {response.text}")
         return response.status_code == 202
 
 # ============ Public Routes ============
@@ -261,8 +263,12 @@ async def contact_form(
     await db.messages.insert_one(message_dict)
     
     # Send email
+    logging.info("📧 Looking for email settings...")
     email_settings = await db.email_settings.find_one({}, {"_id": 0})
+    logging.info(f"📧 Email settings found: {email_settings is not None}")
+    
     if email_settings:
+        logging.info(f"📧 Provider: {email_settings.get('provider')}, From: {email_settings.get('from_email')}, To: {email_settings.get('to_email')}")
         subject = f"New message from {name}"
         photos_html = ""
         if photo_urls:
@@ -283,23 +289,31 @@ async def contact_form(
         
         try:
             if email_settings['provider'] == 'resend':
-                await send_email_via_resend(
+                logging.info("📧 Sending via Resend...")
+                result = await send_email_via_resend(
                     email_settings['api_key'],
                     email_settings['from_email'],
                     email_settings['to_email'],
                     subject,
                     html
                 )
+                logging.info(f"📧 Resend result: {result}")
             elif email_settings['provider'] == 'sendgrid':
-                await send_email_via_sendgrid(
+                logging.info("📧 Sending via SendGrid...")
+                result = await send_email_via_sendgrid(
                     email_settings['api_key'],
                     email_settings['from_email'],
                     email_settings['to_email'],
                     subject,
                     html
                 )
+                logging.info(f"📧 SendGrid result: {result}")
+            else:
+                logging.warning(f"📧 Unknown provider: {email_settings['provider']}")
         except Exception as e:
-            logging.error(f"Email send error: {e}")
+            logging.error(f"📧 Email send error: {e}")
+    else:
+        logging.warning("📧 No email settings found in database!")
     
     return {"success": True, "message": "Message sent"}
 

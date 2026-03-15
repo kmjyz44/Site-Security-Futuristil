@@ -50,7 +50,7 @@
 
 ### Testing Contact Form with Photos
 
-1. Go to website: https://site-control-33.preview.emergentagent.com/
+1. Go to website: https://contact-system-test.preview.emergentagent.com/
 2. Scroll to contact form
 3. Fill in details
 4. Click "Attach Photos" - you can select multiple images
@@ -62,7 +62,7 @@
 
 Photos are saved in: `/app/frontend/public/uploads/`
 
-Access via: `https://site-control-33.preview.emergentagent.com/uploads/filename.jpg`
+Access via: `https://contact-system-test.preview.emergentagent.com/uploads/filename.jpg`
 
 ### Email Notifications
 
