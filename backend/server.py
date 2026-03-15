@@ -234,8 +234,10 @@ async def contact_form(
     service: str = Form(""),
     photos: List[UploadFile] = File(None)
 ):
-    # Save uploaded photos
+    # Save uploaded photos and prepare for email
     photo_urls = []
+    photo_attachments = []  # For embedding in email
+    
     if photos:
         import os
         upload_dir = "/app/frontend/public/uploads"
@@ -244,16 +246,27 @@ async def contact_form(
         for photo in photos:
             if photo and photo.filename:
                 # Generate unique filename
-                file_ext = photo.filename.split('.')[-1]
+                file_ext = photo.filename.split('.')[-1].lower()
                 unique_filename = f"{uuid.uuid4()}.{file_ext}"
                 file_path = os.path.join(upload_dir, unique_filename)
                 
+                # Read content
+                content = await photo.read()
+                
                 # Save file
                 with open(file_path, "wb") as buffer:
-                    content = await photo.read()
                     buffer.write(content)
                 
                 photo_urls.append(f"/uploads/{unique_filename}")
+                
+                # Prepare base64 for email embedding
+                content_type = f"image/{file_ext}" if file_ext in ['jpg', 'jpeg', 'png', 'gif', 'webp'] else "image/jpeg"
+                photo_base64 = base64.b64encode(content).decode('utf-8')
+                photo_attachments.append({
+                    "filename": photo.filename,
+                    "content_type": content_type,
+                    "base64": photo_base64
+                })
     
     # Save message to DB
     message_dict = {
@@ -287,11 +300,11 @@ async def contact_form(
     
     subject = f"New message from {name}"
     photos_html = ""
-    if photo_urls:
-        photos_html = "<p><strong>Attached photos:</strong></p><ul>"
-        for url in photo_urls:
-            photos_html += f'<li><a href="{url}">{url}</a></li>'
-        photos_html += "</ul>"
+    if photo_attachments:
+        photos_html = "<p><strong>Attached photos:</strong></p>"
+        for i, photo in enumerate(photo_attachments):
+            photos_html += f'<p><strong>{photo["filename"]}:</strong></p>'
+            photos_html += f'<img src="data:{photo["content_type"]};base64,{photo["base64"]}" style="max-width: 500px; max-height: 400px; margin: 10px 0; border: 1px solid #ccc;" /><br/>'
     
     html = f"""
     <h2>New message from website</h2>
