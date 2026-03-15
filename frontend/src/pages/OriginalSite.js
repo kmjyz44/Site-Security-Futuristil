@@ -23,7 +23,7 @@ export default function OriginalSite() {
         document.body.appendChild(seoScript);
         
         const contactScript = document.createElement('script');
-        contactScript.src = '/contact-integration.js';
+        contactScript.src = '/contact-integration.js?v=' + Date.now();
         document.body.appendChild(contactScript);
         
       } catch (error) {
