@@ -267,56 +267,64 @@ async def contact_form(
     # Send email
     logging.info("📧 Looking for email settings...")
     email_settings = await db.email_settings.find_one({}, {"_id": 0})
-    logging.info(f"📧 Email settings found: {email_settings is not None}")
     
-    if email_settings:
-        logging.info(f"📧 Provider: {email_settings.get('provider')}, From: {email_settings.get('from_email')}, To: {email_settings.get('to_email')}")
-        subject = f"New message from {name}"
-        photos_html = ""
-        if photo_urls:
-            photos_html = "<p><strong>Attached photos:</strong></p><ul>"
-            for url in photo_urls:
-                photos_html += f'<li><a href="{url}">{url}</a></li>'
-            photos_html += "</ul>"
-        
-        html = f"""
-        <h2>New message from website</h2>
-        <p><strong>Name:</strong> {name}</p>
-        <p><strong>Email:</strong> {email}</p>
-        <p><strong>Phone:</strong> {phone or 'Not provided'}</p>
-        <p><strong>Service:</strong> {service or 'Not specified'}</p>
-        <p><strong>Message:</strong></p>
-        <p>{message}</p>
-        {photos_html}
-        """
-        
-        try:
-            if email_settings['provider'] == 'resend':
-                logging.info("📧 Sending via Resend...")
-                result = await send_email_via_resend(
-                    email_settings['api_key'],
-                    email_settings['from_email'],
-                    email_settings['to_email'],
-                    subject,
-                    html
-                )
-                logging.info(f"📧 Resend result: {result}")
-            elif email_settings['provider'] == 'sendgrid':
-                logging.info("📧 Sending via SendGrid...")
-                result = await send_email_via_sendgrid(
-                    email_settings['api_key'],
-                    email_settings['from_email'],
-                    email_settings['to_email'],
-                    subject,
-                    html
-                )
-                logging.info(f"📧 SendGrid result: {result}")
-            else:
-                logging.warning(f"📧 Unknown provider: {email_settings['provider']}")
-        except Exception as e:
-            logging.error(f"📧 Email send error: {e}")
-    else:
-        logging.warning("📧 No email settings found in database!")
+    # Use hardcoded defaults if no settings in database
+    if not email_settings:
+        logging.info("📧 No settings in DB, using hardcoded defaults")
+        email_settings = {
+            "provider": "sendgrid",
+            "api_key": "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",
+            "from_email": "cameras@cameras.services",
+            "to_email": "kmjyz44sha@gmail.com"
+        }
+    
+    logging.info(f"📧 Email settings found: True")
+    logging.info(f"📧 Provider: {email_settings.get('provider')}, From: {email_settings.get('from_email')}, To: {email_settings.get('to_email')}")
+    
+    subject = f"New message from {name}"
+    photos_html = ""
+    if photo_urls:
+        photos_html = "<p><strong>Attached photos:</strong></p><ul>"
+        for url in photo_urls:
+            photos_html += f'<li><a href="{url}">{url}</a></li>'
+        photos_html += "</ul>"
+    
+    html = f"""
+    <h2>New message from website</h2>
+    <p><strong>Name:</strong> {name}</p>
+    <p><strong>Email:</strong> {email}</p>
+    <p><strong>Phone:</strong> {phone or 'Not provided'}</p>
+    <p><strong>Service:</strong> {service or 'Not specified'}</p>
+    <p><strong>Message:</strong></p>
+    <p>{message}</p>
+    {photos_html}
+    """
+    
+    try:
+        if email_settings['provider'] == 'resend':
+            logging.info("📧 Sending via Resend...")
+            result = await send_email_via_resend(
+                email_settings['api_key'],
+                email_settings['from_email'],
+                email_settings['to_email'],
+                subject,
+                html
+            )
+            logging.info(f"📧 Resend result: {result}")
+        elif email_settings['provider'] == 'sendgrid':
+            logging.info("📧 Sending via SendGrid...")
+            result = await send_email_via_sendgrid(
+                email_settings['api_key'],
+                email_settings['from_email'],
+                email_settings['to_email'],
+                subject,
+                html
+            )
+            logging.info(f"📧 SendGrid result: {result}")
+        else:
+            logging.warning(f"📧 Unknown provider: {email_settings['provider']}")
+    except Exception as e:
+        logging.error(f"📧 Email send error: {e}")
     
     return {"success": True, "message": "Message sent"}
 
