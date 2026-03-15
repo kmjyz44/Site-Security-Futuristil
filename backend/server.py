@@ -191,8 +191,21 @@ async def send_email_via_resend(api_key: str, from_email: str, to_email: str, su
         )
         return response.status_code == 200
 
-async def send_email_via_sendgrid(api_key: str, from_email: str, to_email: str, subject: str, html: str):
+async def send_email_via_sendgrid(api_key: str, from_email: str, to_email: str, subject: str, html: str, attachments: list = None):
     logging.info(f"📧 SendGrid: Sending email from {from_email} to {to_email}")
+    
+    email_data = {
+        "personalizations": [{"to": [{"email": to_email}]}],
+        "from": {"email": from_email},
+        "subject": subject,
+        "content": [{"type": "text/html", "value": html}]
+    }
+    
+    # Add attachments if provided
+    if attachments:
+        email_data["attachments"] = attachments
+        logging.info(f"📧 Adding {len(attachments)} attachment(s)")
+    
     async with httpx.AsyncClient() as client:
         response = await client.post(
             "https://api.sendgrid.com/v3/mail/send",
@@ -200,13 +213,8 @@ async def send_email_via_sendgrid(api_key: str, from_email: str, to_email: str, 
                 "Authorization": f"Bearer {api_key}",
                 "Content-Type": "application/json"
             },
-            json={
-                "personalizations": [{"to": [{"email": to_email}]}],
-                "from": {"email": from_email},
-                "subject": subject,
-                "content": [{"type": "text/html", "value": html}]
-            },
-            timeout=10.0
+            json=email_data,
+            timeout=30.0
         )
         logging.info(f"📧 SendGrid Response: {response.status_code} - {response.text}")
         return response.status_code == 202
@@ -342,11 +350,18 @@ async def contact_form(
     
     subject = f"New message from {name}"
     photos_html = ""
+    sendgrid_attachments = []
+    
     if photo_attachments:
-        photos_html = "<p><strong>Attached photos:</strong></p>"
-        for i, photo in enumerate(photo_attachments):
-            photos_html += f'<p><strong>{photo["filename"]}:</strong></p>'
-            photos_html += f'<img src="data:{photo["content_type"]};base64,{photo["base64"]}" style="max-width: 500px; max-height: 400px; margin: 10px 0; border: 1px solid #ccc;" /><br/>'
+        photos_html = f"<p><strong>Attached photos: {len(photo_attachments)} file(s)</strong></p>"
+        for photo in photo_attachments:
+            # Prepare SendGrid attachment format
+            sendgrid_attachments.append({
+                "content": photo["base64"],
+                "type": photo["content_type"],
+                "filename": photo["filename"],
+                "disposition": "attachment"
+            })
     
     html = f"""
     <h2>New message from website</h2>
@@ -377,7 +392,8 @@ async def contact_form(
                 email_settings['from_email'],
                 email_settings['to_email'],
                 subject,
-                html
+                html,
+                sendgrid_attachments if sendgrid_attachments else None
             )
             logging.info(f"📧 SendGrid result: {result}")
         else:
