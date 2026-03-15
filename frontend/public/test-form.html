@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Form Test - cameras.services</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0a0c10;
+            color: white;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #00e1ff;
+            text-align: center;
+        }
+        form {
+            background: rgba(255,255,255,0.05);
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid rgba(0,225,255,0.3);
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            color: #00e1ff;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 20px;
+            background: #00e1ff;
+            color: #0a0c10;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #00b8d4;
+        }
+        .message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .success {
+            background: rgba(0,255,0,0.2);
+            border: 1px solid green;
+        }
+        .error {
+            background: rgba(255,0,0,0.2);
+            border: 1px solid red;
+        }
+        a {
+            color: #00e1ff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>📧 Contact Form Test</h1>
+    <p style="text-align: center;">cameras.services</p>
+    
+    <form id="contactForm">
+        <label>Name *</label>
+        <input type="text" name="name" required placeholder="Your name">
+        
+        <label>Email *</label>
+        <input type="email" name="email" required placeholder="your@email.com">
+        
+        <label>Phone</label>
+        <input type="tel" name="phone" placeholder="+380...">
+        
+        <label>Message *</label>
+        <textarea name="message" required rows="5" placeholder="Your message..."></textarea>
+        
+        <label>Photos (optional)</label>
+        <input type="file" name="photos" multiple accept="image/*">
+        
+        <button type="submit">Send Message</button>
+    </form>
+    
+    <div id="result"></div>
+    
+    <p style="text-align: center; margin-top: 30px;">
+        <a href="/">← Back to main site</a>
+    </p>
+
+    <script>
+        const form = document.getElementById('contactForm');
+        const result = document.getElementById('result');
+        
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(form);
+            const button = form.querySelector('button');
+            button.disabled = true;
+            button.textContent = 'Sending...';
+            
+            try {
+                const response = await fetch('/api/contact', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    result.className = 'message success';
+                    result.textContent = '✅ Message sent successfully!';
+                    form.reset();
+                } else {
+                    result.className = 'message error';
+                    result.textContent = '❌ Error: ' + (data.message || 'Unknown error');
+                }
+            } catch (error) {
+                result.className = 'message error';
+                result.textContent = '❌ Error: ' + error.message;
+            } finally {
+                button.disabled = false;
+                button.textContent = 'Send Message';
+            }
+        });
+    </script>
+</body>
+</html>
