@@ -499,6 +499,19 @@ logger = logging.getLogger(__name__)
 @app.on_event("startup")
 async def startup():
     await init_admin()
+    
+    # Initialize email settings if not exist
+    email_settings = await db.email_settings.find_one({})
+    if not email_settings:
+        default_email_settings = {
+            "provider": "sendgrid",
+            "api_key": "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",
+            "from_email": "cameras@cameras.services",
+            "to_email": "kmjyz44sha@gmail.com"
+        }
+        await db.email_settings.insert_one(default_email_settings)
+        logging.info("📧 Default email settings initialized")
+    
     # Initialize default sections
     count = await db.sections.count_documents({})
     if count == 0:
