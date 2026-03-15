@@ -211,6 +211,42 @@ async def send_email_via_sendgrid(api_key: str, from_email: str, to_email: str, 
 async def root():
     return {"message": "SecureHome API"}
 
+@api_router.get("/init-system")
+async def init_system():
+    """Initialize system - creates admin user and email settings if not exist"""
+    results = {"admin": False, "email": False}
+    
+    # Create admin if not exists
+    admin = await db.admins.find_one({"username": "admin"})
+    if not admin:
+        hashed_password = bcrypt.hashpw("admin123".encode('utf-8'), bcrypt.gensalt())
+        await db.admins.insert_one({
+            "username": "admin",
+            "password": hashed_password.decode('utf-8'),
+            "created_at": datetime.now(timezone.utc).isoformat()
+        })
+        results["admin"] = True
+        logging.info("🔐 Admin user created via /init-system")
+    else:
+        results["admin"] = "exists"
+    
+    # Create email settings if not exists
+    email_settings = await db.email_settings.find_one({})
+    if not email_settings:
+        default_email_settings = {
+            "provider": "sendgrid",
+            "api_key": os.environ.get('SENDGRID_API_KEY', ''),
+            "from_email": os.environ.get('EMAIL_FROM', ''),
+            "to_email": os.environ.get('EMAIL_TO', '')
+        }
+        await db.email_settings.insert_one(default_email_settings)
+        results["email"] = True
+        logging.info("📧 Email settings created via /init-system")
+    else:
+        results["email"] = "exists"
+    
+    return {"success": True, "initialized": results}
+
 @api_router.get("/content", response_model=SiteContent)
 async def get_content():
     content = await db.site_content.find_one({}, {"_id": 0})
